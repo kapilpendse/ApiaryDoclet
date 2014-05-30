@@ -15,6 +15,7 @@ You have to specify that *javadoc* has to use another doclet than the default do
 		-doclet org.kaisquare.ApiaryDoclet
 
 Example:
+
 	javadoc -docletpath target/gson-2.2.4.jar:target/ApiaryDoclet.jar -doclet com.kaisquare.ApiaryDoclet -sourcepath app/controllers/api/*.java
 
 
