@@ -1,7 +1,7 @@
 ApiaryDoclet
 ============
 
-ApiaryDoclet is a Java doclet implementation that generates an Apiary blueprint from you Java code documentation.
+ApiaryDoclet is a Java doclet implementation that generates an Apiary blueprint from your Java code documentation.
 
 
 Run
