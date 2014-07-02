@@ -93,7 +93,7 @@ public class ApiaryDoclet {
         
         ServiceRequest request = new ServiceRequest();
         request.charset = "UTF-8";
-        request.contentType = "application/json";
+        request.contentType = "application/x-www-form-urlencoded";
         request.httpMethod = httpMethod;
         request.inputParameters = params;
         request.uri = uri;

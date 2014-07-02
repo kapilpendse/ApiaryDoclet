@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 /**
  *
@@ -171,20 +172,39 @@ public class ApiaryWriter {
             }
 
             //Service header
-            bWriter.write(title);
-            bWriter.newLine();
-            bWriter.write(request.httpMethod + " " + request.uri);
+            bWriter.write(title + "  "); //end line with 2 empty spaces
+            bWriter.newLine();           //and a newline to force Markdown line break
+            bWriter.newLine();           //one more newline before bullet list of parameters
+            String url = request.httpMethod + " " + request.uri;
+            String params = "";
+            if(request.inputParameters != null && request.inputParameters.isEmpty() == false) {
+                StringBuilder sb = new StringBuilder();
+                for(String p : request.inputParameters.keySet()) {
+                    bWriter.write("* " + p + " - " + request.inputParameters.get(p));
+                    bWriter.newLine();
+                    sb.append(",").append(p);
+                }
+                bWriter.newLine();
+                params = sb.substring(1); //get string except for the initial comma
+            }
+            if(params != null && params.isEmpty() == false) {
+                url = url + "{?" + params + "}";
+            }
+            bWriter.write(url);
             bWriter.newLine();
             //Service request
-            if(request.contentType != null && !request.contentType.isEmpty()) {
+            if(request.httpMethod != null &&
+                (request.httpMethod.equalsIgnoreCase("POST") ||
+                 request.httpMethod.equalsIgnoreCase("PUT")
+                ) &&
+                request.contentType != null &&
+                request.contentType.isEmpty() == false) {
                 bWriter.write("> Content-Type: " + request.contentType);
                 if(request.charset != null && !request.charset.isEmpty()) {
                     bWriter.write("; charset=" + request.charset);
                 }
                 bWriter.newLine();
             }
-            bWriter.write(gson.toJson(request.inputParameters));
-            bWriter.newLine();
             //Service response(s)
             for(int i=0; i<responses.length; i++) {
                 if(i > 0) {
