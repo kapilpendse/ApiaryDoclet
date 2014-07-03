@@ -4,6 +4,7 @@
  */
 package com.kaisquare;
 
+import com.kaisquare.util.SectionTitle;
 import com.kaisquare.writers.ApiaryWriter;
 import com.kaisquare.writers.apiary.ApiaryTags;
 import com.kaisquare.writers.apiary.ServiceRequest;
@@ -226,10 +227,10 @@ public class ApiaryDoclet {
         initWriter(destFilePath, apiHost, docTitle, docDescription);
 
         ClassDoc[] classes = root.classes();
-        Map<String, ClassDoc> classesToProcess = new HashMap<String, ClassDoc>();
+        Map<SectionTitle, ClassDoc> classesToProcess = new HashMap<SectionTitle, ClassDoc>();
         for(ClassDoc c:classes) {
             Tag[] tags = c.tags();
-            String sectionTitle = "";
+            SectionTitle sectionTitle = new SectionTitle();
             Boolean ignoreThisClass = true;
             for(Tag t:tags) {
                 if(t.name().equalsIgnoreCase(ApiaryTags.PUBLICAPI)) {
@@ -244,13 +245,13 @@ public class ApiaryDoclet {
 //                                e.getMessage());
 //                    }
                 } else if(t.name().equalsIgnoreCase(ApiaryTags.SECTIONTITLE)) {
-                    sectionTitle = t.text();
+                    sectionTitle.title = t.text();
                 }
             }
             
-            if(ignoreThisClass == false && sectionTitle.isEmpty() == false) {
+            if(ignoreThisClass == false && sectionTitle.title.isEmpty() == false) {
                 classesToProcess.put(sectionTitle, c);
-            } else if(ignoreThisClass == false && sectionTitle.isEmpty() == true) {
+            } else if(ignoreThisClass == false && sectionTitle.title.isEmpty() == true) {
                 LOG.log(Level.WARNING, "Ignoring class {0}, because @sectiontitle tag is empty/missing",
                         c.qualifiedName());
             } else {
@@ -258,9 +259,9 @@ public class ApiaryDoclet {
             }
         }
 
-        List<String> sectionTitles = new ArrayList<String>(classesToProcess.keySet());
-        Collections.sort(sectionTitles);
-        for(String st:sectionTitles) {
+        List<SectionTitle> sectionTitles = new ArrayList<SectionTitle>(classesToProcess.keySet());
+        Collections.sort(sectionTitles, new SectionTitle());
+        for(SectionTitle st:sectionTitles) {
             ClassDoc c = classesToProcess.get(st);
             try {
                 processClass(c);
